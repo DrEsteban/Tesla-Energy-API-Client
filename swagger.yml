@@ -1,0 +1,344 @@
+openapi: 3.0.3
+info:
+  title: Tesla Energy API - Swagger
+  version: 0.1.1
+externalDocs:
+  description: Manually crafted from teslaapi.io
+  url: https://www.teslaapi.io/
+servers:
+  - url: https://owner-api.teslamotors.com
+tags:
+  - name: auth
+    description: Authentication API
+    externalDocs:
+      url: https://www.teslaapi.io/authentication/oauth
+  - name: energy_sites
+    description: Energy Sites
+    externalDocs:
+      description: Energy Sites APIs
+      url: https://www.teslaapi.io/energy-sites/state-and-settings
+  - name: powerwall
+    description: Powerwall
+    externalDocs:
+      description: Powerwall APIs
+      url: https://www.teslaapi.io/energy-sites/state-and-settings
+paths:
+  /oauth/token:
+    post:
+      tags:
+        - auth
+      summary: Get Oauth token
+      operationId: getOauthToken
+      requestBody:
+        description: User info
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TokenRequest"
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+  /api/1/energy_sites/{siteId}/site_status:
+    get:
+      tags:
+        - energy_sites
+      summary: Get site status
+      operationId: getSiteStatus
+      parameters:
+        - name: siteId
+          in: path
+          description: Site ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SiteStatus'
+      security:
+        - BearerAuth: []
+  /api/1/energy_sites/{siteId}/live_status:
+    get:
+      tags:
+        - energy_sites
+      summary: Get live status
+      operationId: getLiveStatus
+      parameters:
+        - name: siteId
+          in: path
+          description: Site ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LiveStatus'
+      security:
+        - BearerAuth: []
+  /api/1/energy_sites/{siteId}/site_info:
+    get:
+      tags:
+        - energy_sites
+      summary: Get site info
+      operationId: getSiteInfo
+      parameters:
+        - name: siteId
+          in: path
+          description: Site ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SiteInfo'
+      security:
+        - BearerAuth: []
+  /api/1/energy_sites/{siteId}/history:
+    get:
+      tags:
+        - energy_sites
+      summary: Get history
+      operationId: getHistory
+      parameters:
+        - name: siteId
+          in: path
+          description: Site ID
+          required: true
+          schema:
+            type: string
+        - name: kind
+          in: query
+          description: Kind
+          required: true
+          schema:
+            type: string
+            enum:
+              - energy
+              - power
+        - name: period
+          in: query
+          description: Period
+          required: true
+          schema:
+            type: string
+            enum:
+              - day
+              - month
+              - year
+        - name: date
+          in: query
+          description: Date
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SiteHistory'
+                # type: array
+                # items:
+                #   type: object
+                #   properties:
+                #     time: 
+                #       type: string
+                #       format: date-time
+                #     value:
+                #       type: number
+      security:
+        - BearerAuth: []
+  /api/1/powerwalls/{batteryId}/status:
+    get:
+      tags:
+        - powerwall
+      summary: Get powerwall status
+      operationId: getPowerwallStatus
+      parameters:
+        - name: batteryId
+          in: path
+          description: Battery ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PowerwallStatus'
+      security:
+        - BearerAuth: []
+  /api/1/powerwalls/{batteryId}:
+    get:
+      tags:
+        - powerwall
+      summary: Get powerwall info
+      operationId: getPowerwallInfo
+      parameters:
+        - name: batteryId
+          in: path
+          description: Battery ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PowerwallInfo'
+      security:
+        - BearerAuth: []
+  /api/1/powerwalls/{batteryId}/powerhistory:
+    get:
+      tags:
+        - powerwall
+      summary: Get powerwall power history
+      operationId: getPowerwallPowerHistory
+      parameters:
+        - name: batteryId
+          in: path
+          description: Battery ID
+          required: true
+          schema:
+            type: string
+        - name: period
+          in: query
+          description: Period
+          required: true
+          schema:
+            type: string
+            enum:
+              - day
+              - month
+              - year
+        - name: date
+          in: query
+          description: Date
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PowerHistory'
+      security:
+        - BearerAuth: []
+  /api/1/powerwalls/{batteryId}/energyhistory:
+    get:
+      tags:
+        - powerwall
+      summary: Get powerwall energy history
+      operationId: getPowerwallEnergyHistory
+      parameters:
+        - name: batteryId
+          in: path
+          description: Battery ID
+          required: true
+          schema:
+            type: string
+        - name: period
+          in: query
+          description: Period
+          required: true
+          schema:
+            type: string
+            enum:
+              - day
+              - month
+              - year
+        - name: date
+          in: query
+          description: Date
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnergyHistory'
+      security:
+        - BearerAuth: []
+components:
+  schemas:
+    TokenRequest:
+      type: object
+      properties:
+        password:
+          type: string
+        email:
+          type: string
+        client_secret:
+          type: string
+        client_id:
+          type: string
+        grant_type:
+          type: string
+          enum:
+            - password
+            - refresh_token
+    TokenResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+        expires_in:
+          type: integer
+          format: int64
+        refresh_token:
+          type: string
+        created_at:
+          type: integer
+          format: int64
+    SiteStatus: # TODO: Add all fields
+      type: string
+    LiveStatus: # TODO: Add all fields
+      type: string
+    SiteInfo: # TODO: Add all fields
+      type: string
+    SiteHistory: # TODO: Add all fields
+      type: string
+    PowerwallStatus: # TODO: Add all fields
+      type: string
+    PowerwallInfo: # TODO: Add all fields
+      type: string
+    PowerHistory: # TODO: Add all fields
+      type: string
+    EnergyHistory: # TODO: Add all fields
+      type: string
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
